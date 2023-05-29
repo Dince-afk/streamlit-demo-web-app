@@ -45,6 +45,7 @@ text_tab, messages_tab, layouts_tab, data_tab, visualization_tab, animations_tab
 
 # ------------------------------------------ Text Tab ---------------------------------------------------
 with text_tab:
+    "### streamlit text methods"
     st.title("Title")
     st.header("Header")
     st.subheader("Subheader")
@@ -53,6 +54,8 @@ with text_tab:
     st.write("**bold**")
     st.caption("Caption")
     st.code("a = 1234")
+    st.divider()
+    "### Magic text rendering"
     "**Non-Markdown**"
     "# 1 Text"
     "## 2"
@@ -60,7 +63,14 @@ with text_tab:
     "#### 4"
     "#### 5"
     "##### 6"
-    "Display code"
+    st.divider()
+    "### Metrics/KPI Widgets"
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Temperature", "70 °F", "1.2 °F")
+    col2.metric("Wind", "9 mph", "-8%")
+    col3.metric("Humidity", "86%", "4%")
+    st.divider()
+    "### Display code"
     with st.echo():
         st.write('This code will be printed')
 
@@ -90,7 +100,7 @@ with layouts_tab:
 # ------------------------------------------ Data Tab ---------------------------------------------------
 with data_tab:
     pokemon = pd.read_csv("data.csv", index_col="Name")
-    mockdata = pd.read_csv("MOck_DATA.csv")
+    mockdata = pd.read_csv("MOCK_DATA.csv")
     pokemon
     mockdata
 
