@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 st.title("Practice App")
@@ -32,7 +32,7 @@ map_data = pd.DataFrame(
     columns=['lat', 'lon'])
 
 st.map(map_data)
-st.write(plt.scatter(df["HP"], df["Attack"]))
+# st.write(plt.scatter(df["HP"], df["Attack"]))
 st.write(df[["HP", "Attack"]].plot.scatter("HP", "Attack"))
 
 st.slider("Label")
