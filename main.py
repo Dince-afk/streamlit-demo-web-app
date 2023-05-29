@@ -5,7 +5,7 @@ from mock_data import column_text_data
 # import matplotlib.pyplot as plt
 
 # set page configuration 
-st.set_page_config(page_title="Exercise App", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Exercise App")
 st.title("Exercise App")
 
 
@@ -107,9 +107,20 @@ with data_tab:
 # ------------------------------------------ Visualizations Tab ---------------------------------------------------
 
 with visualization_tab:
-    "test"
+    vis_left_column, vis_right_column = st.columns(2)
+    with vis_left_column:
+        "### Line chart"
+        st.line_chart(pokemon.groupby(["Generation"])[["HP"]].mean())
+        st.line_chart(pokemon.groupby(["Generation", "Legendary"])[["HP"]].mean().reset_index().pivot(index="Generation", columns="Legendary", values="HP"))
+        "### Area chart"
+        st.area_chart(pokemon.groupby(["Generation"])[["HP"]].mean())
+        
+    with vis_right_column:
+        "### Bar chart"
+        st.caption("Pokemon by Type")
+        st.bar_chart(pd.DataFrame(pokemon.groupby(["Type 1"]).size()))
 
-# ------------------------------------------ Animations Tab ---------------------------------------------------
+# ------------------------------------------ Animations Tab ------------------  --------------------------------
 
 with animations_tab:
     "test"
