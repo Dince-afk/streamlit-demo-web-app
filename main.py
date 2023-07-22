@@ -4,52 +4,42 @@ import numpy as np
 from mock_data import column_text_data
 # import matplotlib.pyplot as plt
 
-# set page configuration 
+# set page configuration
 st.set_page_config(page_title="Exercise App")
 st.title("Exercise App")
 
 
 # ------------------------------------------ Sidebar ---------------------------------------------------
-# create and set sidebar
+# create and set sidebars
 with st.sidebar:
     st.write("# Sidebar")
-    st.write("## User widgets")
-    st.text_input("Your name", key="name")
-    # You can access the value at any point with:
-    print(st.session_state.name)
-    st.checkbox("Checkbox", help="This is a help toolbar")
-    st.selectbox("Select Box", ("A", "B", "C"), index=0)
-    st.slider('Select a range of values', 0.0, 100.0, (25.0, 75.0))
-    st.button('Hit me')
-    # st.download_button('On the dl', df)
-    st.checkbox('Check me out')
-    st.radio('Radio', [1,2,3])
-    st.selectbox('Select', [1,2,3])
-    st.multiselect('Multiselect', [1,2,3])
-    st.slider('Slide me', min_value=0, max_value=10)
-    st.select_slider('Slide to select', options=range(10))
-    st.text_input('Enter some text')
-    st.number_input('Enter a number')
-    st.text_area('Area for textual entry')
-    st.date_input('Date input')
-    st.time_input('Time entry')
-    st.file_uploader('File uploader')
-    # st.camera_input("一二三,茄子!")
-    st.color_picker('Pick a color')
 
 
 # ------------------------------------------ Tabs ---------------------------------------------------
 # create and set tabs
-text_tab, messages_tab, layouts_tab, data_tab, visualization_tab, animations_tab, logic_tab = st.tabs(["Text", "Messages", "Layouts", "Data", "Visualizations", "Animations", "Logic"])
+(
+    text_tab,
+    controls_tab,
+    messages_tab,
+    layouts_tab,
+    data_tab,
+    visualization_tab,
+    animations_tab,
+    logic_tab,
+) = st.tabs(
+    ["Text", "Controls", "Messages", "Layouts", "Data", "Visualizations", "Animations", "Logic"]
+)
+
+
 
 
 # ------------------------------------------ Text Tab ---------------------------------------------------
 with text_tab:
-    "### streamlit text methods"
+    "# Title"
     st.title("Title")
     st.header("Header")
     st.subheader("Subheader")
-    st.text("Fixed widht text")
+    st.text("Fixed width text")
     st.markdown("**Markdown**")
     st.write("**bold**")
     st.caption("Caption")
@@ -72,15 +62,45 @@ with text_tab:
     st.divider()
     "### Display code"
     with st.echo():
-        st.write('This code will be printed')
+        st.write("This code will be printed")
+
+# ------------------------------------------ Controls Tab ---------------------------------------------------
+
+with controls_tab:
+    st.write("## User widgets")
+    st.text_input("Text Input", key="name")
+    # You can access the value at any point with:
+    print(st.session_state.name)
+    st.checkbox("Checkbox", help="This is a help toolbar")
+    st.selectbox("Select Box", ("A", "B", "C"), index=0)
+    st.slider("Select a range of values", 0.0, 100.0, (25.0, 75.0))
+    st.button("Hit me")
+    # st.download_button('On the dl', df)
+    st.checkbox("Check me out")
+    st.radio("Radio", [1, 2, 3])
+    st.selectbox("Select", [1, 2, 3])
+    st.selectbox("Select", [1, 2, 3])
+    st.multiselect("Multiselect", [1, 2, 3])
+    st.slider("Slide me", min_value=0, max_value=10)
+    st.select_slider("Slide to select", options=range(10))
+    st.text_input("Enter some text")
+    st.number_input("Enter a number")
+    st.text_area("Area for textual entry")
+    st.date_input("Date input")
+    st.time_input("Time entry")
+    st.file_uploader("File uploader")
+    # st.camera_input("一二三,茄子!")
+    st.color_picker("Pick a color")
 
 
 # ------------------------------------------ Messages Tab ---------------------------------------------------
 with messages_tab:
-    st.error('Error message')
-    st.warning('Warning message')
-    st.info('Info message')
-    st.success('Success message', )
+    st.error("Error message")
+    st.warning("Warning message")
+    st.info("Info message")
+    st.success(
+        "Success message",
+    )
 
 # ------------------------------------------ Layout Tab ---------------------------------------------------
 with layouts_tab:
@@ -93,7 +113,7 @@ with layouts_tab:
     # or even better, call Streamlit functions inside a "with" block:
     with middle_column:
         st.write(column_text_data[1])
-        
+
     with right_column:
         st.write(column_text_data[2])
 
@@ -111,10 +131,15 @@ with visualization_tab:
     with vis_left_column:
         "### Line chart"
         st.line_chart(pokemon.groupby(["Generation"])[["HP"]].mean())
-        st.line_chart(pokemon.groupby(["Generation", "Legendary"])[["HP"]].mean().reset_index().pivot(index="Generation", columns="Legendary", values="HP"))
+        st.line_chart(
+            pokemon.groupby(["Generation", "Legendary"])[["HP"]]
+            .mean()
+            .reset_index()
+            .pivot(index="Generation", columns="Legendary", values="HP")
+        )
         "### Area chart"
         st.area_chart(pokemon.groupby(["Generation"])[["HP"]].mean())
-        
+
     with vis_right_column:
         "### Bar chart"
         st.caption("Pokemon by Type")
@@ -127,15 +152,13 @@ with animations_tab:
 
 # ------------------------------------------ Logic Tab ---------------------------------------------------
 
-with animations_tab:
-    "test"
-
+with logic_tab:
+    "Logic"
 
 # # st.balloons()
 # # st.snow()
 
 # # st.exception()
-
 
 
 # # Use checkboxes to show/hide data
@@ -160,7 +183,6 @@ with animations_tab:
 # 'You selected: ', option
 
 
-
 # st.title("Practice App")
 
 # # st.write(df)
@@ -168,7 +190,7 @@ with animations_tab:
 # # df_widget = st.dataframe(df)
 # # df_widget.add_rows(df.head())
 
-# # use dataframe methods in order to change it 
+# # use dataframe methods in order to change it
 # dataframe = pd.DataFrame(
 #     np.random.randn(10, 20),
 #     columns=('col %d' % i for i in range(20)))
