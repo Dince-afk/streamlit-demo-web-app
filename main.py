@@ -1,12 +1,26 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from mock_data import column_text_data
+import time
+from data.mock_data import column_text_data
+from PIL import Image
+
 # import matplotlib.pyplot as plt
 
+pokemon = pd.read_csv("data/data.csv", index_col="Name")
+mockdata = pd.read_csv("data/MOCK_DATA.csv")
+image = Image.open("images/hills.jpg")
+
+
 # set page configuration
-st.set_page_config(page_title="Exercise App")
-st.title("Exercise App")
+st.set_page_config(
+    page_title="Demo App",
+    initial_sidebar_state="collapsed",
+    page_icon=None,
+    layout="centered",
+    menu_items=None,
+)
+st.title("Demo App")
 
 
 # ------------------------------------------ Sidebar ---------------------------------------------------
@@ -14,12 +28,13 @@ st.title("Exercise App")
 with st.sidebar:
     st.write("# Sidebar")
 
-
 # ------------------------------------------ Tabs ---------------------------------------------------
 # create and set tabs
 (
     text_tab,
+    media_tab,
     controls_tab,
+    status_tab,
     messages_tab,
     layouts_tab,
     data_tab,
@@ -27,16 +42,25 @@ with st.sidebar:
     animations_tab,
     logic_tab,
 ) = st.tabs(
-    ["Text", "Controls", "Messages", "Layouts", "Data", "Visualizations", "Animations", "Logic"]
+    [
+        "Text",
+        "Media",
+        "Controls",
+        "Status",
+        "Messages",
+        "Layouts",
+        "Data",
+        "Visualizations",
+        "Animations",
+        "Logic",
+    ]
 )
-
-
 
 
 # ------------------------------------------ Text Tab ---------------------------------------------------
 with text_tab:
-    "# Title"
-    st.title("Title")
+    "# Title (just via string)"
+    st.title("Title (via title function)")
     st.header("Header")
     st.subheader("Subheader")
     st.text("Fixed width text")
@@ -64,6 +88,11 @@ with text_tab:
     with st.echo():
         st.write("This code will be printed")
 
+# ------------------------------------------ Media Tab ---------------------------------------------------
+with media_tab:
+    st.image(image, "Hills")
+
+
 # ------------------------------------------ Controls Tab ---------------------------------------------------
 
 with controls_tab:
@@ -78,8 +107,6 @@ with controls_tab:
     # st.download_button('On the dl', df)
     st.checkbox("Check me out")
     st.radio("Radio", [1, 2, 3])
-    st.selectbox("Select", [1, 2, 3])
-    st.selectbox("Select", [1, 2, 3])
     st.multiselect("Multiselect", [1, 2, 3])
     st.slider("Slide me", min_value=0, max_value=10)
     st.select_slider("Slide to select", options=range(10))
@@ -91,6 +118,40 @@ with controls_tab:
     st.file_uploader("File uploader")
     # st.camera_input("一二三,茄子!")
     st.color_picker("Pick a color")
+
+# ------------------------------------------ Messages Tab ---------------------------------------------------
+
+with status_tab:
+    if st.button("Spin me"):
+        with st.spinner('Wait for it...'):
+            time.sleep(5)
+        st.success('Done!')
+
+    if st.button("Progress me"):
+        progress_text = "Operation in progress. Please wait."
+        my_bar = st.progress(0, text=progress_text)
+
+        for percent_complete in range(100):
+            time.sleep(0.1)
+            my_bar.progress(percent_complete + 1, text=progress_text)
+
+    if st.button("Error me"):
+        st.error('This is an error', icon="🚨")
+
+    if st.button("Warn me"):
+        st.warning('This is a warning', icon="⚠️")
+
+    if st.button("Info me"):
+        st.info('This is a purely informational message', icon="ℹ️")
+
+    if st.button("Success me"):
+        st.success('This is a success message!', icon="✅")
+
+    if st.button("Exception me"):
+        e = RuntimeError('This is an exception of type RuntimeError')
+        st.exception(e)
+
+
 
 
 # ------------------------------------------ Messages Tab ---------------------------------------------------
@@ -119,9 +180,7 @@ with layouts_tab:
 
 # ------------------------------------------ Data Tab ---------------------------------------------------
 with data_tab:
-    pokemon = pd.read_csv("data.csv", index_col="Name")
-    mockdata = pd.read_csv("MOCK_DATA.csv")
-    pokemon
+    st.dataframe(pokemon, hide_index=True)
     mockdata
 
 # ------------------------------------------ Visualizations Tab ---------------------------------------------------
@@ -144,30 +203,28 @@ with visualization_tab:
         "### Bar chart"
         st.caption("Pokemon by Type")
         st.bar_chart(pd.DataFrame(pokemon.groupby(["Type 1"]).size()))
+        map_data = pd.DataFrame(
+            np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
+            columns=["lat", "lon"],
+        )
+
+        st.map(map_data)
+
 
 # ------------------------------------------ Animations Tab ------------------  --------------------------------
 
 with animations_tab:
-    "test"
+    st.balloons()
+    st.snow()
+
 
 # ------------------------------------------ Logic Tab ---------------------------------------------------
 
 with logic_tab:
-    "Logic"
-
-# # st.balloons()
-# # st.snow()
-
-# # st.exception()
-
-
-# # Use checkboxes to show/hide data
-# if st.checkbox('Show dataframe'):
-#     chart_data = pd.DataFrame(
-#        np.random.randn(20, 3),
-#        columns=['a', 'b', 'c'])
-
-#     chart_data
+    # Use checkboxes to show/hide data
+    if st.checkbox("Show dataframe"):
+        chart_data = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
+        chart_data
 
 
 # # use a selectbox for options
@@ -205,11 +262,6 @@ with logic_tab:
 # st.line_chart(chart_data)
 # st.line_chart(df.groupby("Generation")[["HP", "Attack", "Defense"]].mean())
 
-# map_data = pd.DataFrame(
-#     np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
-#     columns=['lat', 'lon'])
-
-# st.map(map_data)
 # # st.write(plt.scatter(df["HP"], df["Attack"]))
 # st.write(df[["HP", "Attack"]].plot.scatter("HP", "Attack"))
 
