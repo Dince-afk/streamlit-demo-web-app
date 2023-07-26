@@ -9,7 +9,6 @@ from PIL import Image
 
 pokemon = pd.read_csv("data/data.csv", index_col="Name")
 mockdata = pd.read_csv("data/MOCK_DATA.csv")
-image = Image.open("images/hills.jpg")
 
 
 # set page configuration
@@ -32,25 +31,25 @@ with st.sidebar:
 # create and set tabs
 (
     text_tab,
-    media_tab,
+    visualization_tab,
+    data_tab,
     controls_tab,
     status_tab,
+    media_tab,
     messages_tab,
     layouts_tab,
-    data_tab,
-    visualization_tab,
     animations_tab,
     logic_tab,
 ) = st.tabs(
     [
         "Text",
-        "Media",
+        "Visualizations",
+        "Data",
         "Controls",
         "Status",
+        "Media",
         "Messages",
         "Layouts",
-        "Data",
-        "Visualizations",
         "Animations",
         "Logic",
     ]
@@ -59,38 +58,72 @@ with st.sidebar:
 
 # ------------------------------------------ Text Tab ---------------------------------------------------
 with text_tab:
-    "# Title (just via string)"
-    st.title("Title (via title function)")
-    st.header("Header")
-    st.subheader("Subheader")
-    st.text("Fixed width text")
-    st.markdown("**Markdown**")
-    st.write("**bold**")
-    st.caption("Caption")
-    st.code("a = 1234")
-    st.divider()
-    "### Magic text rendering"
-    "**Non-Markdown**"
-    "# 1 Text"
-    "## 2"
-    "### 3"
-    "#### 4"
-    "#### 5"
-    "##### 6"
-    st.divider()
-    "### Metrics/KPI Widgets"
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Temperature", "70 °F", "1.2 °F")
-    col2.metric("Wind", "9 mph", "-8%")
-    col3.metric("Humidity", "86%", "4%")
-    st.divider()
-    "### Display code"
-    with st.echo():
-        st.write("This code will be printed")
+    left_column, right_column = st.columns(2)
 
-# ------------------------------------------ Media Tab ---------------------------------------------------
-with media_tab:
-    st.image(image, "Hills")
+    with left_column:
+        st.title("Title")
+        st.header("Header", help="Optional tooltip")
+        st.subheader("Subheader")
+        st.text("Fixed width text")
+        st.markdown("**Markdown**")
+        st.write("**bold**")
+        st.caption("Caption", help="Optional tooltip")
+        "### Magic text rendering"
+        "**Bold**"
+        "*Italic*"
+
+    with right_column:
+        "### Metrics/KPI Widgets"
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Temperature", "70 °F", "1.2 °F", help="Optional toolbar")
+        col2.metric("Wind", "9 mph", "-8%")
+        col3.metric("Humidity", "86%", "4%")
+        st.divider()
+        "### Display code"
+        st.code("Code")
+        with st.echo():
+            st.write("This code will be printed")
+
+# ------------------------------------------ Visualizations Tab ---------------------------------------------------
+
+with visualization_tab:
+    vis_left_column, vis_right_column = st.columns(2)
+    with vis_left_column:
+        "### Line chart"
+        "#### One line"
+        st.line_chart(pokemon.groupby(["Generation"])[["HP"]].mean())
+        "#### Two lines"
+        st.line_chart(
+            pokemon.groupby(["Generation", "Legendary"])[["HP"]]
+            .mean()
+            .reset_index()
+            .pivot(index="Generation", columns="Legendary", values="HP")
+        )
+        "### Area chart"
+        st.area_chart(pokemon.groupby(["Generation"])[["HP"]].mean())
+        "### Matplotlib chart"
+        st.pyplot(
+            pd.DataFrame(pokemon.groupby(["Type 1"]).size()).plot(kind="barh").figure
+        )
+
+    with vis_right_column:
+        "### Bar chart"
+        st.caption("Pokemon by Type")
+        st.bar_chart(pd.DataFrame(pokemon.groupby(["Type 1"]).size()))
+        map_data = pd.DataFrame(
+            np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
+            columns=["lat", "lon"],
+        )
+
+        st.map(map_data)
+
+# ------------------------------------------ Data Tab ---------------------------------------------------
+with data_tab:
+    "#### Dataframe"
+    st.dataframe(pokemon, use_container_width=True)
+
+    "#### Dataframe Editor"
+    st.data_editor(pokemon.head(), use_container_width=True)
 
 
 # ------------------------------------------ Controls Tab ---------------------------------------------------
@@ -119,7 +152,8 @@ with controls_tab:
     # st.camera_input("一二三,茄子!")
     st.color_picker("Pick a color")
 
-# ------------------------------------------ Messages Tab ---------------------------------------------------
+
+# ------------------------------------------ Status Tab ---------------------------------------------------
 
 with status_tab:
     if st.button("Spin me"):
@@ -152,6 +186,38 @@ with status_tab:
         st.exception(e)
 
 
+# ------------------------------------------ Media Tab ---------------------------------------------------
+with media_tab:
+
+    left_column, right_column = st.columns(2)
+    with left_column:
+        "#### Image"
+        image = Image.open("media/hills.jpg")
+        st.image(image, "Hills", width=600)
+
+    with right_column:
+        "#### Audio"
+        audio_file = open("media/Muriel-Nguyen-Xuan-Chopin-valse-opus64-1.ogg", "rb")
+        audio_bytes = audio_file.read()
+
+        st.audio(audio_bytes, format='audio/ogg')
+        # sample_rate = 44100  # 44100 samples per second
+        # seconds = 2  # Note duration of 2 seconds
+        # frequency_la = 440  # Our played note will be 440 Hz
+        # # Generate array with seconds*sample_rate steps, ranging between 0 and seconds
+        # t = np.linspace(0, seconds, seconds * sample_rate, False)
+        # # Generate a 440 Hz sine wave
+        # note_la = np.sin(frequency_la * t * 2 * np.pi)
+
+        # st.audio(note_la, sample_rate=sample_rate)
+        "#### Video"
+        video_file = open("media/star_-_6962 (540p).mp4", 'rb')
+        video_bytes = video_file.read()
+
+        st.video(video_bytes)
+
+
+
 # ------------------------------------------ Messages Tab ---------------------------------------------------
 with messages_tab:
     st.error("Error message")
@@ -175,42 +241,6 @@ with layouts_tab:
 
     with right_column:
         st.write(column_text_data[2])
-
-# ------------------------------------------ Data Tab ---------------------------------------------------
-with data_tab:
-    st.dataframe(pokemon, hide_index=True)
-    mockdata
-
-# ------------------------------------------ Visualizations Tab ---------------------------------------------------
-
-with visualization_tab:
-    vis_left_column, vis_right_column = st.columns(2)
-    with vis_left_column:
-        "### Line chart"
-        st.line_chart(pokemon.groupby(["Generation"])[["HP"]].mean())
-        st.line_chart(
-            pokemon.groupby(["Generation", "Legendary"])[["HP"]]
-            .mean()
-            .reset_index()
-            .pivot(index="Generation", columns="Legendary", values="HP")
-        )
-        "### Area chart"
-        st.area_chart(pokemon.groupby(["Generation"])[["HP"]].mean())
-        "### Matplotlib chart"
-        st.pyplot(
-            pd.DataFrame(pokemon.groupby(["Type 1"]).size()).plot(kind="barh").figure
-        )
-
-    with vis_right_column:
-        "### Bar chart"
-        st.caption("Pokemon by Type")
-        st.bar_chart(pd.DataFrame(pokemon.groupby(["Type 1"]).size()))
-        map_data = pd.DataFrame(
-            np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
-            columns=["lat", "lon"],
-        )
-
-        st.map(map_data)
 
 
 # ------------------------------------------ Animations Tab ------------------  --------------------------------
