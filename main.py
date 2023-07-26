@@ -17,7 +17,7 @@ st.set_page_config(
     page_title="Demo App",
     initial_sidebar_state="collapsed",
     page_icon=None,
-    layout="centered",
+    layout="wide",
     menu_items=None,
 )
 st.title("Demo App")
@@ -123,9 +123,9 @@ with controls_tab:
 
 with status_tab:
     if st.button("Spin me"):
-        with st.spinner('Wait for it...'):
+        with st.spinner("Wait for it..."):
             time.sleep(5)
-        st.success('Done!')
+        st.success("Done!")
 
     if st.button("Progress me"):
         progress_text = "Operation in progress. Please wait."
@@ -136,22 +136,20 @@ with status_tab:
             my_bar.progress(percent_complete + 1, text=progress_text)
 
     if st.button("Error me"):
-        st.error('This is an error', icon="🚨")
+        st.error("This is an error", icon="🚨")
 
     if st.button("Warn me"):
-        st.warning('This is a warning', icon="⚠️")
+        st.warning("This is a warning", icon="⚠️")
 
     if st.button("Info me"):
-        st.info('This is a purely informational message', icon="ℹ️")
+        st.info("This is a purely informational message", icon="ℹ️")
 
     if st.button("Success me"):
-        st.success('This is a success message!', icon="✅")
+        st.success("This is a success message!", icon="✅")
 
     if st.button("Exception me"):
-        e = RuntimeError('This is an exception of type RuntimeError')
+        e = RuntimeError("This is an exception of type RuntimeError")
         st.exception(e)
-
-
 
 
 # ------------------------------------------ Messages Tab ---------------------------------------------------
@@ -198,6 +196,10 @@ with visualization_tab:
         )
         "### Area chart"
         st.area_chart(pokemon.groupby(["Generation"])[["HP"]].mean())
+        "### Matplotlib chart"
+        st.pyplot(
+            pd.DataFrame(pokemon.groupby(["Type 1"]).size()).plot(kind="barh").figure
+        )
 
     with vis_right_column:
         "### Bar chart"
@@ -225,44 +227,3 @@ with logic_tab:
     if st.checkbox("Show dataframe"):
         chart_data = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
         chart_data
-
-
-# # use a selectbox for options
-# df = pd.DataFrame({
-#     'first column': [1, 2, 3, 4],
-#     'second column': [10, 20, 30, 40]
-#     })
-
-# option = st.selectbox(
-#     'Which number do you like best?',
-#      df['first column'])
-
-# 'You selected: ', option
-
-
-# st.title("Practice App")
-
-# # st.write(df)
-# # st.table(df.head(10))
-# # df_widget = st.dataframe(df)
-# # df_widget.add_rows(df.head())
-
-# # use dataframe methods in order to change it
-# dataframe = pd.DataFrame(
-#     np.random.randn(10, 20),
-#     columns=('col %d' % i for i in range(20)))
-
-# st.dataframe(dataframe.style.highlight_max(axis=0))
-
-# # create charts
-# chart_data = pd.DataFrame(
-#      np.random.randn(20, 3),
-#      columns=['a', 'b', 'c'])
-
-# st.line_chart(chart_data)
-# st.line_chart(df.groupby("Generation")[["HP", "Attack", "Defense"]].mean())
-
-# # st.write(plt.scatter(df["HP"], df["Attack"]))
-# st.write(df[["HP", "Attack"]].plot.scatter("HP", "Attack"))
-
-# st.slider("Label")
